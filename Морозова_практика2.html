@@ -1,0 +1,1182 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест: История России</title>
+    <style>
+        /* Сброс */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #c9d1f4 0%, #d7b9f6 100%);
+            min-height: 100vh;
+            padding: 2rem 1rem;
+        }
+        
+        /* Контейнер */
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+        
+        /* Карточка */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Шапка с градиентом */
+        .header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 3rem 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 20s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            color: white;
+            text-shadow: 2px 2px 10px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .header p {
+            color: rgba(255,255,255,0.95);
+            font-size: 1.2em;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Панель информации */
+        .info-bar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 1.5rem 2rem;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            color: white;
+        }
+        
+        .info-item {
+            text-align: center;
+            padding: 1rem;
+            background: rgba(255,255,255,0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .info-icon {
+            font-size: 2em;
+            margin-bottom: 0.5rem;
+        }
+        
+        .info-value {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+        
+        .info-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .timer-warning {
+            animation: timerPulse 1s infinite;
+        }
+        
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); color: white; }
+            50% { transform: scale(1.1); color: #ff6b6b; }
+        }
+        
+        /* Прогресс */
+        .progress-wrapper {
+            padding: 1.5rem 2rem;
+            background: #f8f9fa;
+        }
+        
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .progress-track {
+            height: 12px;
+            background: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #484e6c 0%, #baaacc 100%);
+            border-radius: 10px;
+            transition: width 0.4s ease;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* Контент вопроса */
+        .question-content {
+            padding: 3rem 2rem;
+            min-height: 450px;
+        }
+        
+        .question-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #7b87bb 0%, #5c5365 100%);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        
+        .question-text {
+            font-size: 1.5em;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 2.5rem;
+            line-height: 1.5;
+        }
+        
+        /* Варианты ответов */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .option-card {
+            background: #f8f9fa;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .option-card::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            transition: width 0.3s ease;
+        }
+        
+        .option-card:hover {
+            transform: translateX(5px);
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+        
+        .option-card:hover::before {
+            width: 100%;
+        }
+        
+        .option-card.selected {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15) 0%, rgba(118, 75, 162, 0.15) 100%);
+            border-color: #667eea;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .option-indicator {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #dee2e6;
+            border-radius: 50%;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .option-card.selected .option-indicator {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #b1bdf4 0%, #4e4656 100%);
+        }
+        
+        .option-indicator::after {
+            content: '✓';
+            color: white;
+            font-weight: 700;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+        
+        .option-card.selected .option-indicator::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .option-checkbox {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #dee2e6;
+            border-radius: 8px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: white;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .option-card.selected .option-checkbox {
+            border-color: #667eea;
+            background: linear-gradient(135deg, #a5b0e0 0%, #4d4358 100%);
+        }
+        
+        .option-checkbox::after {
+            content: '✓';
+            color: white;
+            font-weight: 700;
+            opacity: 0;
+            transform: scale(0);
+            transition: all 0.3s ease;
+        }
+        
+        .option-card.selected .option-checkbox::after {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .option-text {
+            flex-grow: 1;
+            font-size: 1.1em;
+            color: #495057;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Текстовый ввод */
+        .text-input-wrapper {
+            margin-top: 1rem;
+        }
+        
+        .text-input {
+            width: 100%;
+            padding: 1.5rem;
+            font-size: 1.2em;
+            border: 3px solid #e9ecef;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+        
+        .text-input:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.2);
+        }
+        
+        /* Навигация */
+        .navigation {
+            padding: 2rem;
+            background: #f8f9fa;
+            display: flex;
+            gap: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        button {
+            flex: 1;
+            padding: 1rem 2rem;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .btn-gradient {
+            background: linear-gradient(135deg, #c8d1f6 0%, #4b3b5b 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+        
+        .btn-gradient:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+        
+        .btn-secondary:hover {
+            background: #667eea;
+            color: white;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            box-shadow: 0 5px 20px rgba(17, 153, 142, 0.4);
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(17, 153, 142, 0.5);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+        
+        /* Результаты */
+        .results {
+            padding: 3rem 2rem;
+            text-align: center;
+        }
+        
+        .results h2 {
+            font-size: 2.5em;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+        
+        .score-display {
+            width: 250px;
+            height: 250px;
+            margin: 2rem auto;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.4);
+            animation: scaleIn 0.6s ease;
+        }
+        
+        @keyframes scaleIn {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .score-number {
+            font-size: 5em;
+            font-weight: 900;
+            color: white;
+            line-height: 1;
+        }
+        
+        .score-text {
+            font-size: 1.2em;
+            color: rgba(255,255,255,0.9);
+            margin-top: 0.5rem;
+        }
+        
+        .grade-message {
+            font-size: 1.5em;
+            color: #495057;
+            margin: 2rem 0;
+            font-weight: 500;
+        }
+        
+        /* Статистика */
+        .stats-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 3rem 0;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #f093fb 0%, #f2d2d6 100%);
+            padding: 2rem;
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+            animation: fadeInUp 0.6s ease;
+            animation-fill-mode: both;
+        }
+        
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .stat-icon {
+            font-size: 3em;
+            margin-bottom: 1rem;
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 1em;
+            opacity: 0.9;
+        }
+        
+        /* Разбор ответов */
+        .review-section {
+            margin-top: 4rem;
+            text-align: left;
+        }
+        
+        .review-title {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        
+        .review-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            margin-bottom: 1.5rem;
+            border-left: 6px solid #e9ecef;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            animation: slideInLeft 0.5s ease;
+            animation-fill-mode: both;
+        }
+        
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .review-card.correct {
+            border-left-color: #38ef7d;
+            background: linear-gradient(90deg, rgba(56, 239, 125, 0.05) 0%, white 100%);
+        }
+        
+        .review-card.incorrect {
+            border-left-color: #f2b0b9;
+            background: linear-gradient(90deg, rgba(245, 87, 108, 0.05) 0%, white 100%);
+        }
+        
+        .review-question-num {
+            font-weight: 700;
+            color: #667eea;
+            margin-bottom: 0.8rem;
+        }
+        
+        .review-question-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+        }
+        
+        .review-answer-block {
+            margin: 1rem 0;
+            padding: 1rem;
+            background: rgba(0,0,0,0.03);
+            border-radius: 10px;
+        }
+        
+        .review-answer-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 0.3rem;
+        }
+        
+        .review-answer-text {
+            color: #6c757d;
+        }
+        
+        .review-explanation {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px dashed #e9ecef;
+            color: #495057;
+            font-style: italic;
+            line-height: 1.6;
+        }
+        
+        .review-explanation::before {
+            content: '💡 ';
+            font-style: normal;
+        }
+        
+        /* Скрыто */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Адаптив */
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem 0.5rem;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .info-bar {
+                grid-template-columns: 1fr;
+            }
+            
+            .question-content {
+                padding: 2rem 1.5rem;
+                min-height: auto;
+            }
+            
+            .question-text {
+                font-size: 1.2em;
+            }
+            
+            .navigation {
+                flex-direction: column;
+            }
+            
+            .score-display {
+                width: 200px;
+                height: 200px;
+            }
+            
+            .score-number {
+                font-size: 4em;
+            }
+            
+            .stats-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Шапка -->
+            <div class="header">
+                <h1>📚 История России</h1>
+                <p>Проверьте свои знания</p>
+            </div>
+            
+            <!-- Информационная панель -->
+            <div id="infoBar" class="info-bar">
+                <div class="info-item">
+                    <div class="info-icon">📝</div>
+                    <div class="info-value" id="totalQuestions">12</div>
+                    <div class="info-label">Вопросов</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">🎯</div>
+                    <div class="info-value" id="currentNum">1</div>
+                    <div class="info-label">Текущий</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-icon">⏱️</div>
+                    <div class="info-value" id="timer">15:00</div>
+                    <div class="info-label">Осталось</div>
+                </div>
+            </div>
+            
+            <!-- Прогресс -->
+            <div class="progress-wrapper">
+                <div class="progress-label">
+                    <span>Прогресс</span>
+                    <span id="progressPercent">0%</span>
+                </div>
+                <div class="progress-track">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+            </div>
+            
+            <!-- Вопросы -->
+            <div id="questionArea" class="question-content">
+                <!-- Загружается динамически -->
+            </div>
+            
+            <!-- Навигация -->
+            <div id="navigation" class="navigation">
+                <button class="btn-secondary" id="prevBtn" onclick="goToPrevious()">
+                    ← Назад
+                </button>
+                <button class="btn-gradient" id="nextBtn" onclick="goToNext()">
+                    Далее →
+                </button>
+                <button class="btn-success hidden" id="finishBtn" onclick="finishTest()">
+                    ✓ Завершить
+                </button>
+            </div>
+            
+            <!-- Результаты -->
+            <div id="resultsArea" class="results hidden">
+                <!-- Загружается динамически -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // База вопросов по истории России
+        const questions = [
+            {
+                id: 1,
+                question: "В каком году было Крещение Руси?",
+                type: "single",
+                options: ["862", "988", "1054", "1147"],
+                correct: 1,
+                points: 1,
+                explanation: "Крещение Руси произошло в 988 году при князе Владимире Святославиче."
+            },
+            {
+                id: 2,
+                question: "Кто основал Москву?",
+                type: "single",
+                options: [
+                    "Рюрик",
+                    "Юрий Долгорукий",
+                    "Иван Калита",
+                    "Дмитрий Донской"
+                ],
+                correct: 1,
+                points: 1,
+                explanation: "Москва была основана князем Юрием Долгоруким в 1147 году."
+            },
+            {
+                id: 3,
+                question: "Выберите события, связанные с Петром I:",
+                type: "multiple",
+                options: [
+                    "Основание Санкт-Петербурга",
+                    "Отмена крепостного права",
+                    "Северная война",
+                    "Бородинское сражение",
+                    "Создание регулярной армии"
+                ],
+                correct: [0, 2, 4],
+                points: 2,
+                explanation: "Пётр I основал Санкт-Петербург (1703), вёл Северную войну (1700-1721) и создал регулярную армию."
+            },
+            {
+                id: 4,
+                question: "В каком году началась Великая Отечественная война?",
+                type: "text",
+                correct: "1941",
+                points: 1,
+                explanation: "Великая Отечественная война началась 22 июня 1941 года."
+            },
+            {
+                id: 5,
+                question: "Кто был первым царём всея Руси?",
+                type: "single",
+                options: [
+                    "Иван III",
+                    "Иван IV (Грозный)",
+                    "Пётр I",
+                    "Борис Годунов"
+                ],
+                correct: 1,
+                points: 1,
+                explanation: "Иван IV Грозный был первым официально венчанным на царство царём всея Руси в 1547 году."
+            },
+            {
+                id: 6,
+                question: "Какие реформы провела Екатерина II?",
+                type: "multiple",
+                options: [
+                    "Губернская реформа",
+                    "Отмена крепостного права",
+                    "Жалованная грамота дворянству",
+                    "Создание Государственной думы",
+                    "Секуляризация церковных земель"
+                ],
+                correct: [0, 2, 4],
+                points: 2,
+                explanation: "Екатерина II провела губернскую реформу, дала дворянству привилегии и секуляризировала церковные земли."
+            },
+            {
+                id: 7,
+                question: "В каком году было отменено крепостное право в России?",
+                type: "text",
+                correct: "1861",
+                points: 1,
+                explanation: "Крепостное право было отменено 19 февраля 1861 года Манифестом Александра II."
+            },
+            {
+                id: 8,
+                question: "Какое событие произошло в 1812 году?",
+                type: "single",
+                options: [
+                    "Восстание декабристов",
+                    "Отечественная война",
+                    "Крымская война",
+                    "Русско-японская война"
+                ],
+                correct: 1,
+                points: 1,
+                explanation: "В 1812 году произошла Отечественная война с Наполеоном."
+            },
+            {
+                id: 9,
+                question: "Кто возглавлял СССР во время Великой Отечественной войны?",
+                type: "single",
+                options: [
+                    "Ленин",
+                    "Сталин",
+                    "Хрущёв",
+                    "Брежнев"
+                ],
+                correct: 1,
+                points: 1,
+                explanation: "Иосиф Виссарионович Сталин был Верховным главнокомандующим в годы ВОВ (1941-1945)."
+            },
+            {
+                id: 10,
+                question: "Выберите известных русских полководцев:",
+                type: "multiple",
+                options: [
+                    "Александр Суворов",
+                    "Михаил Ломоносов",
+                    "Михаил Кутузов",
+                    "Александр Пушкин",
+                    "Георгий Жуков"
+                ],
+                correct: [0, 2, 4],
+                points: 2,
+                explanation: "Суворов, Кутузов и Жуков — великие русские полководцы. Ломоносов — учёный, Пушкин — поэт."
+            },
+            {
+                id: 11,
+                question: "В каком году распался СССР?",
+                type: "text",
+                correct: "1991",
+                points: 1,
+                explanation: "СССР прекратил своё существование 26 декабря 1991 года."
+            },
+            {
+                id: 12,
+                question: "Что произошло в России в 1917 году?",
+                type: "single",
+                options: [
+                    "Отмена крепостного права",
+                    "Октябрьская революция",
+                    "Начало Первой мировой войны",
+                    "Образование СССР"
+                ],
+                correct: 1,
+                points: 1,
+                explanation: "В 1917 году произошла Октябрьская революция, которая привела к смене власти в России."
+            }
+        ];
+
+        // Переменные
+        let currentQuestionIndex = 0;
+        let userAnswers = new Array(questions.length);
+        let timeLeft = 900; // 15 минут
+        let timerInterval;
+
+        // Инициализация
+        function init() {
+            document.getElementById('totalQuestions').textContent = questions.length;
+            startTimer();
+            showQuestion();
+        }
+
+        // Показать вопрос
+        function showQuestion() {
+            const q = questions[currentQuestionIndex];
+            const area = document.getElementById('questionArea');
+            
+            let html = `
+                <div class="question-badge">
+                    Вопрос ${currentQuestionIndex + 1} / ${questions.length} 
+                    • ${q.points} ${declension(q.points, ['балл', 'балла', 'баллов'])}
+                </div>
+                <div class="question-text">${q.question}</div>
+                <div class="options-grid">
+            `;
+            
+            if (q.type === 'single') {
+                q.options.forEach((opt, idx) => {
+                    const selected = userAnswers[currentQuestionIndex] === idx ? 'selected' : '';
+                    html += `
+                        <div class="option-card ${selected}" onclick="selectSingle(${idx})">
+                            <div class="option-indicator"></div>
+                            <div class="option-text">${opt}</div>
+                        </div>
+                    `;
+                });
+            } else if (q.type === 'multiple') {
+                q.options.forEach((opt, idx) => {
+                    const selected = userAnswers[currentQuestionIndex]?.includes(idx) ? 'selected' : '';
+                    html += `
+                        <div class="option-card ${selected}" onclick="selectMultiple(${idx})">
+                            <div class="option-checkbox"></div>
+                            <div class="option-text">${opt}</div>
+                        </div>
+                    `;
+                });
+            } else if (q.type === 'text') {
+                const value = userAnswers[currentQuestionIndex] || '';
+                html += `
+                    <div class="text-input-wrapper">
+                        <input type="text" class="text-input" id="textInput" 
+                               placeholder="Введите ответ..." value="${value}"
+                               oninput="saveText()">
+                    </div>
+                `;
+            }
+            
+            html += '</div>';
+            area.innerHTML = html;
+            
+            updateUI();
+        }
+
+        // Выбор одного
+        function selectSingle(idx) {
+            userAnswers[currentQuestionIndex] = idx;
+            showQuestion();
+        }
+
+        // Выбор нескольких
+        function selectMultiple(idx) {
+            if (!userAnswers[currentQuestionIndex]) {
+                userAnswers[currentQuestionIndex] = [];
+            }
+            
+            const arr = userAnswers[currentQuestionIndex];
+            const pos = arr.indexOf(idx);
+            
+            if (pos > -1) {
+                arr.splice(pos, 1);
+            } else {
+                arr.push(idx);
+            }
+            
+            showQuestion();
+        }
+
+        // Сохранить текст
+        function saveText() {
+            userAnswers[currentQuestionIndex] = document.getElementById('textInput').value.trim();
+        }
+
+        // Следующий
+        function goToNext() {
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                showQuestion();
+            }
+        }
+
+        // Предыдущий
+        function goToPrevious() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion();
+            }
+        }
+
+        // Обновить UI
+        function updateUI() {
+            document.getElementById('currentNum').textContent = currentQuestionIndex + 1;
+            document.getElementById('prevBtn').disabled = currentQuestionIndex === 0;
+            
+            if (currentQuestionIndex === questions.length - 1) {
+                document.getElementById('nextBtn').classList.add('hidden');
+                document.getElementById('finishBtn').classList.remove('hidden');
+            } else {
+                document.getElementById('nextBtn').classList.remove('hidden');
+                document.getElementById('finishBtn').classList.add('hidden');
+            }
+            
+            const percent = Math.round(((currentQuestionIndex + 1) / questions.length) * 100);
+            document.getElementById('progressPercent').textContent = percent + '%';
+            document.getElementById('progressFill').style.width = percent + '%';
+        }
+
+        // Таймер
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                
+                const mins = Math.floor(timeLeft / 60);
+                const secs = timeLeft % 60;
+                const display = `${mins}:${secs.toString().padStart(2, '0')}`;
+                document.getElementById('timer').textContent = display;
+                
+                if (timeLeft <= 60) {
+                    document.getElementById('timer').classList.add('timer-warning');
+                }
+                
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    alert('⏰ Время вышло!');
+                    finishTest();
+                }
+            }, 1000);
+        }
+
+        // Завершить тест
+        function finishTest() {
+            const empty = userAnswers.filter(a => 
+                a === undefined || a === null || a === '' || 
+                (Array.isArray(a) && a.length === 0)
+            ).length;
+            
+            if (empty > 0 && !confirm(`⚠️ ${empty} вопросов без ответа. Завершить?`)) {
+                return;
+            }
+            
+            clearInterval(timerInterval);
+            calculateResults();
+        }
+
+        // Расчёт
+        function calculateResults() {
+            let score = 0;
+            let maxScore = 0;
+            let correctCount = 0;
+            
+            const review = questions.map((q, idx) => {
+                maxScore += q.points;
+                let correct = false;
+                const ans = userAnswers[idx];
+                
+                if (q.type === 'single') {
+                    correct = ans === q.correct;
+                } else if (q.type === 'multiple') {
+                    correct = ans && JSON.stringify([...ans].sort()) === JSON.stringify([...q.correct].sort());
+                } else if (q.type === 'text') {
+                    correct = ans && ans.toLowerCase() === q.correct.toLowerCase();
+                }
+                
+                if (correct) {
+                    score += q.points;
+                    correctCount++;
+                }
+                
+                return {
+                    num: idx + 1,
+                    question: q.question,
+                    userAnswer: formatAnswer(q, ans),
+                    correctAnswer: formatAnswer(q, q.correct),
+                    correct: correct,
+                    explanation: q.explanation
+                };
+            });
+            
+            showResults(score, maxScore, correctCount, review);
+        }
+
+        // Форматировать ответ
+        function formatAnswer(q, ans) {
+            if (ans === undefined || ans === null || ans === '' || 
+                (Array.isArray(ans) && ans.length === 0)) {
+                return '<em style="color: #999;">Нет ответа</em>';
+            }
+            
+            if (q.type === 'single') {
+                return q.options[ans];
+            } else if (q.type === 'multiple') {
+                if (Array.isArray(ans)) {
+                    return ans.map(i => q.options[i]).join(', ');
+                }
+                return ans.map(i => q.options[i]).join(', ');
+            } else {
+                return ans;
+            }
+        }
+
+        // Показать результаты
+        function showResults(score, max, correct, review) {
+            document.getElementById('infoBar').classList.add('hidden');
+            document.getElementById('questionArea').classList.add('hidden');
+            document.getElementById('navigation').classList.add('hidden');
+            
+            const percent = Math.round((score / max) * 100);
+            const timeSpent = 900 - timeLeft;
+            const mins = Math.floor(timeSpent / 60);
+            const secs = timeSpent % 60;
+            
+            let grade = '';
+            if (percent >= 90) grade = '🏆 Отлично! Вы настоящий знаток истории!';
+            else if (percent >= 75) grade = '🎖️ Хорошо! Вы хорошо знаете историю России!';
+            else if (percent >= 60) grade = '📚 Удовлетворительно. Рекомендуем повторить материал.';
+            else grade = '💪 Стоит подучить историю. Не сдавайтесь!';
+            
+            let reviewHtml = review.map((r, i) => {
+                r.index = i;
+                return `
+                    <div class="review-card ${r.correct ? 'correct' : 'incorrect'}" 
+                         style="animation-delay: ${i * 0.05}s;">
+                        <div class="review-question-num">
+                            ${r.correct ? '✓' : '✗'} Вопрос ${r.num}
+                        </div>
+                        <div class="review-question-text">${r.question}</div>
+                        <div class="review-answer-block">
+                            <div class="review-answer-label">Ваш ответ:</div>
+                            <div class="review-answer-text">${r.userAnswer}</div>
+                        </div>
+                        ${!r.correct ? `
+                        <div class="review-answer-block">
+                            <div class="review-answer-label">Правильный ответ:</div>
+                            <div class="review-answer-text">${r.correctAnswer}</div>
+                        </div>
+                        ` : ''}
+                        <div class="review-explanation">${r.explanation}</div>
+                    </div>
+                `;
+            }).join('');
+            
+            const html = `
+                <h2>🎉 Тест завершён!</h2>
+                
+                <div class="score-display">
+                    <div class="score-number">${percent}%</div>
+                    <div class="score-text">Ваш результат</div>
+                </div>
+                
+                <div class="grade-message">${grade}</div>
+                
+                <div class="stats-cards">
+                    <div class="stat-card" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                        <div class="stat-icon">🎯</div>
+                        <div class="stat-number">${score}/${max}</div>
+                        <div class="stat-label">Баллов</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
+                        <div class="stat-icon">✓</div>
+                        <div class="stat-number">${correct}/${questions.length}</div>
+                        <div class="stat-label">Правильно</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-number">${percent}%</div>
+                        <div class="stat-label">Успех</div>
+                    </div>
+                    <div class="stat-card" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">
+                        <div class="stat-icon">⏱️</div>
+                        <div class="stat-number">${mins}:${secs.toString().padStart(2, '0')}</div>
+                        <div class="stat-label">Время</div>
+                    </div>
+                </div>
+                
+                <button class="btn-gradient" onclick="location.reload()" 
+                        style="margin: 2rem auto; display: block; max-width: 300px;">
+                    🔄 Пройти ещё раз
+                </button>
+                
+                <div class="review-section">
+                    <h3 class="review-title">📖 Разбор ответов</h3>
+                    ${reviewHtml}
+                </div>
+            `;
+            
+            document.getElementById('resultsArea').innerHTML = html;
+            document.getElementById('resultsArea').classList.remove('hidden');
+        }
+
+        // Склонение
+        function declension(n, forms) {
+            n = Math.abs(n) % 100;
+            const n1 = n % 10;
+            if (n > 10 && n < 20) return forms[2];
+            if (n1 > 1 && n1 < 5) return forms[1];
+            if (n1 === 1) return forms[0];
+            return forms[2];
+        }
+
+        // Старт
+        window.onload = init;
+    </script>
+</body>
+</html>

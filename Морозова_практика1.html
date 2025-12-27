@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Урок: Квадратные уравнения</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #dac8cc 0%, #3d3336 100%);
+            min-height: 100vh;
+        }
+        
+        header {
+            background: #302c2c;
+            color: white;
+            padding: 3rem 2rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+        }
+        
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+        }
+        
+        nav {
+            background: white;
+            padding: 1rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: #1e3c72;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        
+        nav a:hover {
+            color: #667eea;
+        }
+        
+        main {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem 2rem 1rem;
+        }
+        
+        section {
+            background: white;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            animation: fadeInUp 0.6s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        h2 {
+            color: #1e3c72;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 4px solid #667eea;
+            font-size: 2em;
+        }
+        
+        h3 {
+            color: #2a5298;
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            font-size: 1.5em;
+        }
+        
+        .definition {
+            background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%);
+            padding: 2rem;
+            border-left: 6px solid #1e3c72;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .definition strong {
+            color: #1e3c72;
+            font-size: 1.2em;
+        }
+        
+        .formula {
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            padding: 2rem;
+            border-left: 6px solid #ff9800;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .formula-text {
+            font-size: 2em;
+            font-weight: bold;
+            color: #e65100;
+            margin: 1rem 0;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .example {
+            background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
+            padding: 2rem;
+            border-left: 6px solid #9c27b0;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .example h4 {
+            color: #6a1b9a;
+            margin-bottom: 1rem;
+            font-size: 1.3em;
+        }
+        
+        .solution-step {
+            margin: 0.8rem 0;
+            padding-left: 1.5rem;
+            font-size: 1.1em;
+            line-height: 2;
+        }
+        
+        .task {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            border: 3px dashed #4caf50;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .task h4 {
+            color: #2e7d32;
+            margin-bottom: 1rem;
+            font-size: 1.3em;
+        }
+        
+        .answer {
+            display: none;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            border-left: 5px solid #4caf50;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .answer.show {
+            display: block;
+            animation: slideDown 0.4s ease-out;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+                transform: translateY(0);
+            }
+        }
+        
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        button:active {
+            transform: translateY(-1px);
+        }
+        
+        .calculator {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            padding: 2rem;
+            border-radius: 12px;
+            margin: 1.5rem 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .calculator h3 {
+            color: #1976d2;
+            margin-top: 0;
+            text-align: center;
+        }
+        
+        .input-group {
+            margin: 1rem 0;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+            color: #1565c0;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 0.8rem;
+            font-size: 1.1em;
+            border: 2px solid #2196f3;
+            border-radius: 8px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-group input:focus {
+            outline: none;
+            border-color: #1976d2;
+            box-shadow: 0 0 10px rgba(33, 150, 243, 0.3);
+        }
+        
+        .calculator-result {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 8px;
+            border-left: 5px solid #1976d2;
+            font-size: 1.2em;
+            min-height: 60px;
+        }
+        
+        .calculator-result.success {
+            border-left-color: #4caf50;
+            color: #2e7d32;
+        }
+        
+        .calculator-result.error {
+            border-left-color: #f44336;
+            color: #c62828;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+        
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+        }
+        
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+        
+        tr:hover {
+            background: #f0f4ff;
+            transition: background 0.3s;
+        }
+        
+        footer {
+            background: #302c2c;
+            color: white;
+            text-align: center;
+            padding: 2rem;
+            margin-top: 3rem;
+            box-shadow: 0 -4px 6px rgba(0,0,0,0.2);
+        }
+        
+        footer p {
+            font-size: 1.1em;
+        }
+        
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 2em;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+            
+            nav a {
+                display: block;
+                text-align: center;
+            }
+            
+            section {
+                padding: 1.5rem;
+            }
+            
+            h2 {
+                font-size: 1.6em;
+            }
+            
+            .formula-text {
+                font-size: 1.5em;
+            }
+        }
+        
+        /* Анимация при скролле */
+        @media (prefers-reduced-motion: no-preference) {
+            section {
+                opacity: 0;
+                animation: none;
+            }
+            
+            section.visible {
+                animation: fadeInUp 0.6s ease-out forwards;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Квадратные уравнения</h1>
+        <p>Математика</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#theory">Теория</a></li>
+            <li><a href="#formula">Формулы</a></li>
+            <li><a href="#calculator">Калькулятор</a></li>
+            <li><a href="#examples">Примеры</a></li>
+            <li><a href="#tasks">Задания</a></li>
+        </ul>
+    </nav>
+    
+    <main>
+        <section id="theory">
+            <h2><span class="emoji">📚</span>Теория</h2>
+            
+            <div class="definition">
+                <p>
+                    <strong>Квадратное уравнение</strong> — это уравнение вида 
+                    ax² + bx + c = 0, где x — переменная, a, b и c — некоторые числа, 
+                    причём a ≠ 0.
+                </p>
+            </div>
+            
+            <h3>Основные понятия</h3>
+            <p>
+                <strong>a</strong> — коэффициент при x² (старший коэффициент)<br>
+                <strong>b</strong> — коэффициент при x (второй коэффициент)<br>
+                <strong>c</strong> — свободный член
+            </p>
+            
+            <h3>Типы квадратных уравнений</h3>
+            <table>
+                <tr>
+                    <th>Тип</th>
+                    <th>Вид</th>
+                    <th>Пример</th>
+                </tr>
+                <tr>
+                    <td>Полное</td>
+                    <td>ax² + bx + c = 0</td>
+                    <td>2x² + 5x - 3 = 0</td>
+                </tr>
+                <tr>
+                    <td>Неполное (b = 0)</td>
+                    <td>ax² + c = 0</td>
+                    <td>3x² - 12 = 0</td>
+                </tr>
+                <tr>
+                    <td>Неполное (c = 0)</td>
+                    <td>ax² + bx = 0</td>
+                    <td>x² + 4x = 0</td>
+                </tr>
+                <tr>
+                    <td>Неполное (b = 0, c = 0)</td>
+                    <td>ax² = 0</td>
+                    <td>5x² = 0</td>
+                </tr>
+            </table>
+        </section>
+        
+        <section id="formula">
+            <h2><span class="emoji">🔢</span>Формулы решения</h2>
+            
+            <h3>Дискриминант</h3>
+            <div class="formula">
+                <p>Для решения квадратного уравнения сначала находим дискриминант:</p>
+                <div class="formula-text">D = b² - 4ac</div>
+            </div>
+            
+            <p><strong>Количество корней зависит от дискриминанта:</strong></p>
+            <ul style="font-size: 1.1em; line-height: 2;">
+                <li>Если <strong>D > 0</strong> — уравнение имеет <strong>два различных корня</strong></li>
+                <li>Если <strong>D = 0</strong> — уравнение имеет <strong>один корень</strong> (или два одинаковых)</li>
+                <li>Если <strong>D < 0</strong> — уравнение <strong>не имеет действительных корней</strong></li>
+            </ul>
+            
+            <h3>Корни уравнения</h3>
+            <div class="formula">
+                <p>Если D ≥ 0, корни находятся по формулам:</p>
+                <div class="formula-text">x₁ = (-b + √D) / (2a)</div>
+                <div class="formula-text">x₂ = (-b - √D) / (2a)</div>
+            </div>
+        </section>
+        
+        <section id="calculator">
+            <h2><span class="emoji">🧮</span>Интерактивный калькулятор</h2>
+            
+            <div class="calculator">
+                <h3>Решение квадратного уравнения ax² + bx + c = 0</h3>
+                
+                <div class="input-group">
+                    <label for="coefA">Коэффициент a (при x²):</label>
+                    <input type="number" id="coefA" placeholder="Например: 1" step="any">
+                </div>
+                
+                <div class="input-group">
+                    <label for="coefB">Коэффициент b (при x):</label>
+                    <input type="number" id="coefB" placeholder="Например: -5" step="any">
+                </div>
+                
+                <div class="input-group">
+                    <label for="coefC">Свободный член c:</label>
+                    <input type="number" id="coefC" placeholder="Например: 6" step="any">
+                </div>
+                
+                <button onclick="solveEquation()">Решить уравнение</button>
+                
+                <div id="calculatorResult" class="calculator-result"></div>
+            </div>
+        </section>
+        
+        <section id="examples">
+            <h2><span class="emoji">💡</span>Примеры решения</h2>
+            
+            <div class="example">
+                <h4>Пример 1: Решить уравнение x² - 5x + 6 = 0</h4>
+                <p><strong>Решение:</strong></p>
+                <div class="solution-step">
+                    1) Определяем коэффициенты: a = 1, b = -5, c = 6
+                </div>
+                <div class="solution-step">
+                    2) Находим дискриминант: D = b² - 4ac = (-5)² - 4·1·6 = 25 - 24 = 1
+                </div>
+                <div class="solution-step">
+                    3) D > 0, значит уравнение имеет два корня
+                </div>
+                <div class="solution-step">
+                    4) x₁ = (-b + √D) / (2a) = (5 + √1) / (2·1) = (5 + 1) / 2 = 3
+                </div>
+                <div class="solution-step">
+                    5) x₂ = (-b - √D) / (2a) = (5 - √1) / (2·1) = (5 - 1) / 2 = 2
+                </div>
+                <p><strong>Ответ:</strong> x₁ = 3, x₂ = 2</p>
+            </div>
+            
+            <div class="example">
+                <h4>Пример 2: Решить уравнение x² - 6x + 9 = 0</h4>
+                <p><strong>Решение:</strong></p>
+                <div class="solution-step">
+                    1) a = 1, b = -6, c = 9
+                </div>
+                <div class="solution-step">
+                    2) D = (-6)² - 4·1·9 = 36 - 36 = 0
+                </div>
+                <div class="solution-step">
+                    3) D = 0, значит уравнение имеет один корень
+                </div>
+                <div class="solution-step">
+                    4) x = -b / (2a) = 6 / (2·1) = 3
+                </div>
+                <p><strong>Ответ:</strong> x = 3</p>
+            </div>
+            
+            <div class="example">
+                <h4>Пример 3: Решить уравнение x² + 2x + 5 = 0</h4>
+                <p><strong>Решение:</strong></p>
+                <div class="solution-step">
+                    1) a = 1, b = 2, c = 5
+                </div>
+                <div class="solution-step">
+                    2) D = 2² - 4·1·5 = 4 - 20 = -16
+                </div>
+                <div class="solution-step">
+                    3) D < 0, значит уравнение не имеет действительных корней
+                </div>
+                <p><strong>Ответ:</strong> корней нет</p>
+            </div>
+        </section>
+        
+        <section id="tasks">
+            <h2><span class="emoji">✏️</span>Задания для самопроверки</h2>
+            
+            <div class="task">
+                <h4>Задание 1</h4>
+                <p>Решите уравнение: x² - 7x + 12 = 0</p>
+                <button onclick="toggleAnswer('answer1')">Показать ответ</button>
+                <div id="answer1" class="answer">
+                    <p><strong>Решение:</strong></p>
+                    <p>a = 1, b = -7, c = 12</p>
+                    <p>D = (-7)² - 4·1·12 = 49 - 48 = 1</p>
+                    <p>x₁ = (7 + 1) / 2 = 4</p>
+                    <p>x₂ = (7 - 1) / 2 = 3</p>
+                    <p><strong>Ответ: x₁ = 4, x₂ = 3</strong></p>
+                </div>
+            </div>
+            
+            <div class="task">
+                <h4>Задание 2</h4>
+                <p>Решите уравнение: 2x² + 5x - 3 = 0</p>
+                <button onclick="toggleAnswer('answer2')">Показать ответ</button>
+                <div id="answer2" class="answer">
+                    <p><strong>Решение:</strong></p>
+                    <p>a = 2, b = 5, c = -3</p>
+                    <p>D = 5² - 4·2·(-3) = 25 + 24 = 49</p>
+                    <p>x₁ = (-5 + 7) / 4 = 0.5</p>
+                    <p>x₂ = (-5 - 7) / 4 = -3</p>
+                    <p><strong>Ответ: x₁ = 0.5, x₂ = -3</strong></p>
+                </div>
+            </div>
+            
+            <div class="task">
+                <h4>Задание 3</h4>
+                <p>Решите уравнение: x² - 8x + 16 = 0</p>
+                <button onclick="toggleAnswer('answer3')">Показать ответ</button>
+                <div id="answer3" class="answer">
+                    <p><strong>Решение:</strong></p>
+                    <p>a = 1, b = -8, c = 16</p>
+                    <p>D = (-8)² - 4·1·16 = 64 - 64 = 0</p>
+                    <p>x = 8 / 2 = 4</p>
+                    <p><strong>Ответ: x = 4</strong></p>
+                </div>
+            </div>
+            
+            <div class="task">
+                <h4>Задание 4</h4>
+                <p>Решите уравнение: x² + 4x + 5 = 0</p>
+                <button onclick="toggleAnswer('answer4')">Показать ответ</button>
+                <div id="answer4" class="answer">
+                    <p><strong>Решение:</strong></p>
+                    <p>a = 1, b = 4, c = 5</p>
+                    <p>D = 4² - 4·1·5 = 16 - 20 = -4</p>
+                    <p>D < 0, следовательно уравнение не имеет действительных корней</p>
+                    <p><strong>Ответ: корней нет</strong></p>
+                </div>
+            </div>
+            
+            <div class="task">
+                <h4>Задание 5</h4>
+                <p>При каких значениях k уравнение x² - 6x + k = 0 имеет один корень?</p>
+                <button onclick="toggleAnswer('answer5')">Показать ответ</button>
+                <div id="answer5" class="answer">
+                    <p><strong>Решение:</strong></p>
+                    <p>Уравнение имеет один корень, когда D = 0</p>
+                    <p>D = b² - 4ac = (-6)² - 4·1·k = 36 - 4k</p>
+                    <p>36 - 4k = 0</p>
+                    <p>4k = 36</p>
+                    <p>k = 9</p>
+                    <p><strong>Ответ: k = 9</strong></p>
+                </div>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>&copy; 2025 | Учитель математики | Создано для обучения</p>
+    </footer>
+    
+    <script>
+        // Функция переключения видимости ответа
+        function toggleAnswer(answerId) {
+            const answer = document.getElementById(answerId);
+            answer.classList.toggle('show');
+            
+            // Меняем текст кнопки
+            const button = answer.previousElementSibling;
+            if (answer.classList.contains('show')) {
+                button.textContent = 'Скрыть ответ';
+                button.style.background = 'linear-gradient(135deg, #f44336 0%, #e91e63 100%)';
+            } else {
+                button.textContent = 'Показать ответ';
+                button.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+            }
+        }
+        
+        // Функция решения квадратного уравнения
+        function solveEquation() {
+            const a = parseFloat(document.getElementById('coefA').value);
+            const b = parseFloat(document.getElementById('coefB').value);
+            const c = parseFloat(document.getElementById('coefC').value);
+            const result = document.getElementById('calculatorResult');
+            
+            // Проверка ввода
+            if (isNaN(a) || isNaN(b) || isNaN(c)) {
+                result.innerHTML = '<strong>❌ Ошибка:</strong> Пожалуйста, заполните все поля!';
+                result.className = 'calculator-result error';
+                return;
+            }
+            
+            if (a === 0) {
+                result.innerHTML = '<strong>❌ Ошибка:</strong> Коэффициент a не может быть равен 0!<br>Это не квадратное уравнение.';
+                result.className = 'calculator-result error';
+                return;
+            }
+            
+            // Вычисление дискриминанта
+            const D = b * b - 4 * a * c;
+            
+            let output = `<strong>Уравнение:</strong> ${formatCoef(a)}x² ${formatCoef(b, true)}x ${formatCoef(c, true)} = 0<br><br>`;
+            output += `<strong>Дискриминант:</strong> D = b² - 4ac = (${b})² - 4·(${a})·(${c}) = ${D.toFixed(2)}<br><br>`;
+            
+            if (D > 0) {
+                const x1 = (-b + Math.sqrt(D)) / (2 * a);
+                const x2 = (-b - Math.sqrt(D)) / (2 * a);
+                output += `<strong>✅ Уравнение имеет два корня:</strong><br>`;
+                output += `x₁ = ${x1.toFixed(4)}<br>`;
+                output += `x₂ = ${x2.toFixed(4)}`;
+                result.className = 'calculator-result success';
+            } else if (D === 0) {
+                const x = -b / (2 * a);
+                output += `<strong>✅ Уравнение имеет один корень:</strong><br>`;
+                output += `x = ${x.toFixed(4)}`;
+                result.className = 'calculator-result success';
+            } else {
+                output += `<strong>❌ Уравнение не имеет действительных корней</strong><br>`;
+                output += `(D < 0)`;
+                result.className = 'calculator-result error';
+            }
+            
+            result.innerHTML = output;
+        }
+        
+        // Форматирование коэффициента для красивого отображения
+        function formatCoef(coef, withSign = false) {
+            if (coef === 0) return withSign ? '' : '0';
+            
+            let sign = '';
+            if (withSign) {
+                sign = coef > 0 ? '+ ' : '- ';
+                coef = Math.abs(coef);
+            }
+            
+            return sign + (coef === 1 && !withSign ? '' : coef);
+        }
+        
+        // Плавная прокрутка для навигации
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetSection = document.querySelector(targetId);
+                
+                // Учитываем высоту sticky навигации
+                const navHeight = document.querySelector('nav').offsetHeight;
+                const targetPosition = targetSection.offsetTop - navHeight;
+                
+                window.scrollTo({
+                    top: targetPosition,
+                    behavior: 'smooth'
+                });
+            });
+        });
+        
+        // Обработка Enter в калькуляторе
+        document.querySelectorAll('.calculator input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    solveEquation();
+                }
+            });
+        });
+        
+        // Анимация появления секций при скролле
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+        
+        const observer = new IntersectionObserver(function(entries) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+        
+        // Наблюдаем за всеми секциями
+        document.querySelectorAll('section').forEach(section => {
+            observer.observe(section);
+        });
+        
+        // Подсветка активного пункта меню при скролле
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('nav a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 100;
+                if (window.pageYOffset >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.style.fontWeight = 'bold';
+                if (link.getAttribute('href').slice(1) === current) {
+                    link.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                    link.style.color = 'white';
+                } else {
+                    link.style.background = 'transparent';
+                    link.style.color = '#1e3c72';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

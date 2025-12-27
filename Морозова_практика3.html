@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Математический тренажёр</title>
+    <style>
+        /* Сброс */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', sans-serif;
+            background: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        /* Контейнер */
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+        
+        /* Шапка */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+        
+        .header p {
+            color: #6c757d;
+            font-size: 1em;
+        }
+        
+        /* Панель статистики */
+        .stats-panel {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1px;
+            background: #e9ecef;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .stat-box {
+            background: white;
+            padding: 1.5rem 1rem;
+            text-align: center;
+        }
+        
+        .stat-label {
+            font-size: 0.85em;
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stat-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: #007bff;
+        }
+        
+        .stat-value.time {
+            color: #28a745;
+        }
+        
+        .stat-value.time.warning {
+            color: #ffc107;
+            animation: pulse 0.5s infinite;
+        }
+        
+        .stat-value.time.danger {
+            color: #dc3545;
+            animation: pulse 0.3s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+        /* Настройки игры */
+        .settings {
+            padding: 2rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .settings-title {
+            font-size: 1.2em;
+            color: #2c3e50;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .setting-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .setting-label {
+            display: block;
+            font-size: 0.95em;
+            color: #495057;
+            margin-bottom: 0.8rem;
+            font-weight: 500;
+        }
+        
+        .operation-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .operation-btn {
+            padding: 1rem;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .operation-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .operation-btn.active {
+            background: #007bff;
+            border-color: #007bff;
+            color: white;
+        }
+        
+        .difficulty-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        
+        .difficulty-btn {
+            padding: 1rem;
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            color: #495057;
+        }
+        
+        .difficulty-btn:hover {
+            background: #e9ecef;
+        }
+        
+        .difficulty-btn.active {
+            background: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .difficulty-btn.active.medium {
+            background: #ffc107;
+            border-color: #ffc107;
+            color: #495057;
+        }
+        
+        .difficulty-btn.active.hard {
+            background: #dc3545;
+            border-color: #dc3545;
+            color: white;
+        }
+        
+        /* Игровая область */
+        .game-area {
+            padding: 3rem 2rem;
+            min-height: 350px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .problem {
+            font-size: 4em;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .answer-input {
+            width: 250px;
+            padding: 1.5rem;
+            font-size: 2em;
+            text-align: center;
+            border: 3px solid #007bff;
+            border-radius: 12px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        
+        .answer-input:focus {
+            outline: none;
+            border-color: #0056b3;
+            box-shadow: 0 0 0 4px rgba(0,123,255,0.1);
+        }
+        
+        .answer-input.correct {
+            border-color: #28a745;
+            background: #d4edda;
+            animation: correctShake 0.5s ease;
+        }
+        
+        .answer-input.wrong {
+            border-color: #dc3545;
+            background: #f8d7da;
+            animation: wrongShake 0.5s ease;
+        }
+        
+        @keyframes correctShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        @keyframes wrongShake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .feedback {
+            margin-top: 1.5rem;
+            font-size: 1.5em;
+            font-weight: 600;
+            min-height: 40px;
+            text-align: center;
+        }
+        
+        .feedback.correct {
+            color: #28a745;
+        }
+        
+        .feedback.wrong {
+            color: #dc3545;
+        }
+        
+        /* Кнопки действий */
+        .actions {
+            padding: 2rem;
+            background: #f8f9fa;
+            display: flex;
+            gap: 1rem;
+            border-top: 1px solid #e9ecef;
+        }
+        
+        button {
+            flex: 1;
+            padding: 1rem 2rem;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #0056b3;
+            transform: translateY(-2px);
+        }
+        
+        .btn-primary:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #218838;
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #6c757d;
+            border: 2px solid #6c757d;
+        }
+        
+        .btn-secondary:hover {
+            background: #6c757d;
+            color: white;
+        }
+        
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+        }
+        
+        .modal.show {
+            display: flex;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            max-width: 500px;
+            width: 100%;
+            text-align: center;
+            animation: modalShow 0.3s ease;
+        }
+        
+        @keyframes modalShow {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .modal-icon {
+            font-size: 5em;
+            margin-bottom: 1rem;
+        }
+        
+        .modal-title {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 700;
+        }
+        
+        .modal-stats {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+        
+        .modal-stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            font-size: 1.1em;
+        }
+        
+        .modal-stat-label {
+            color: #6c757d;
+        }
+        
+        .modal-stat-value {
+            font-weight: 700;
+            color: #2c3e50;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        /* Таблица рекордов */
+        .records-table {
+            width: 100%;
+            margin-top: 1.5rem;
+            border-collapse: collapse;
+        }
+        
+        .records-table th,
+        .records-table td {
+            padding: 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .records-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #495057;
+            font-size: 0.9em;
+            text-transform: uppercase;
+        }
+        
+        .records-table td {
+            color: #6c757d;
+        }
+        
+        .records-table tr:hover {
+            background: #f8f9fa;
+        }
+        
+        .record-new {
+            color: #28a745 !important;
+            font-weight: 700;
+        }
+        
+        /* Стартовый экран */
+        .start-screen {
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+        
+        .start-icon {
+            font-size: 5em;
+            margin-bottom: 1rem;
+        }
+        
+        .start-title {
+            font-size: 1.8em;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+        
+        .start-description {
+            color: #6c757d;
+            font-size: 1.1em;
+            margin-bottom: 2rem;
+        }
+        
+        /* Скрыто */
+        .hidden {
+            display: none !important;
+        }
+        
+        /* Адаптив */
+        @media (max-width: 768px) {
+            .stats-panel {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .problem {
+                font-size: 2.5em;
+            }
+            
+            .answer-input {
+                width: 200px;
+                font-size: 1.5em;
+            }
+            
+            .operation-buttons {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Шапка -->
+        <div class="header">
+            <h1>🧮 Математический тренажёр</h1>
+            <p>Тренируйте навыки устного счёта</p>
+        </div>
+        
+        <!-- Статистика -->
+        <div class="stats-panel">
+            <div class="stat-box">
+                <div class="stat-label">Счёт</div>
+                <div class="stat-value" id="score">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Верно</div>
+                <div class="stat-value" id="correct">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Ошибок</div>
+                <div class="stat-value" id="wrong">0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Время</div>
+                <div class="stat-value time" id="timer">0:00</div>
+            </div>
+        </div>
+        
+        <!-- Настройки -->
+        <div id="settingsScreen" class="settings">
+            <div class="settings-title">Настройки игры</div>
+            
+            <div class="setting-group">
+                <label class="setting-label">Операции:</label>
+                <div class="operation-buttons">
+                    <div class="operation-btn active" onclick="toggleOperation('add')" data-op="add">+</div>
+                    <div class="operation-btn" onclick="toggleOperation('sub')" data-op="sub">−</div>
+                    <div class="operation-btn active" onclick="toggleOperation('mul')" data-op="mul">×</div>
+                    <div class="operation-btn" onclick="toggleOperation('div')" data-op="div">÷</div>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <label class="setting-label">Сложность:</label>
+                <div class="difficulty-buttons">
+                    <div class="difficulty-btn active" onclick="selectDifficulty('easy')" data-diff="easy">
+                        Легко<br><small>(1-10)</small>
+                    </div>
+                    <div class="difficulty-btn medium" onclick="selectDifficulty('medium')" data-diff="medium">
+                        Средне<br><small>(1-50)</small>
+                    </div>
+                    <div class="difficulty-btn hard" onclick="selectDifficulty('hard')" data-diff="hard">
+                        Сложно<br><small>(1-100)</small>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="setting-group">
+                <label class="setting-label">Количество примеров:</label>
+                <div class="difficulty-buttons">
+                    <div class="difficulty-btn active" onclick="selectProblems(10)" data-problems="10">10</div>
+                    <div class="difficulty-btn" onclick="selectProblems(20)" data-problems="20">20</div>
+                    <div class="difficulty-btn" onclick="selectProblems(30)" data-problems="30">30</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Стартовый экран -->
+        <div id="startScreen" class="start-screen">
+            <div class="start-icon">🚀</div>
+            <div class="start-title">Готовы начать?</div>
+            <div class="start-description">
+                Решите выбранное количество примеров как можно быстрее!
+            </div>
+            <button class="btn-success" onclick="startGame()" style="width: 250px; font-size: 1.3em;">
+                Начать тренировку
+            </button>
+        </div>
+        
+        <!-- Игровая область -->
+        <div id="gameScreen" class="game-area hidden">
+            <div class="problem" id="problem">2 + 2 = ?</div>
+            <input type="number" class="answer-input" id="answerInput" 
+                   placeholder="?" autocomplete="off">
+            <div class="feedback" id="feedback"></div>
+        </div>
+        
+        <!-- Действия -->
+        <div id="actionsScreen" class="actions hidden">
+            <button class="btn-secondary" onclick="skipProblem()">Пропустить</button>
+            <button class="btn-primary" onclick="checkAnswer()">Проверить</button>
+        </div>
+    </div>
+    
+    <!-- Модальное окно результатов -->
+    <div id="resultsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-icon" id="resultsIcon">🎉</div>
+            <div class="modal-title" id="resultsTitle">Отличный результат!</div>
+            
+            <div class="modal-stats">
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Примеров решено:</span>
+                    <span class="modal-stat-value" id="resultTotal">0</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Правильных ответов:</span>
+                    <span class="modal-stat-value" id="resultCorrect">0</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Ошибок:</span>
+                    <span class="modal-stat-value" id="resultWrong">0</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Точность:</span>
+                    <span class="modal-stat-value" id="resultAccuracy">0%</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Время:</span>
+                    <span class="modal-stat-value" id="resultTime">0:00</span>
+                </div>
+                <div class="modal-stat-row">
+                    <span class="modal-stat-label">Итоговый счёт:</span>
+                    <span class="modal-stat-value" id="resultScore">0</span>
+                </div>
+            </div>
+            
+            <div id="recordMessage" class="hidden" style="color: #28a745; font-weight: 600; margin: 1rem 0;">
+                🏆 Новый рекорд!
+            </div>
+            
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="showRecords()">Рекорды</button>
+                <button class="btn-success" onclick="restartGame()">Ещё раз</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно рекордов -->
+    <div id="recordsModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-title">🏆 Таблица рекордов</div>
+            
+            <table class="records-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Счёт</th>
+                        <th>Точность</th>
+                        <th>Время</th>
+                        <th>Дата</th>
+                    </tr>
+                </thead>
+                <tbody id="recordsTableBody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #adb5bd;">
+                            Нет записей
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="clearRecords()">Очистить</button>
+                <button class="btn-primary" onclick="closeRecordsModal()">Закрыть</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Настройки
+        let selectedOperations = ['add', 'mul'];
+        let difficulty = 'easy';
+        let totalProblems = 10;
+        
+        // Игровые переменные
+        let currentProblem = null;
+        let problemNumber = 0;
+        let score = 0;
+        let correctCount = 0;
+        let wrongCount = 0;
+        let startTime = null;
+        let timerInterval = null;
+        let gameActive = false;
+        
+        // Загрузка рекордов
+        function loadRecords() {
+            const records = localStorage.getItem('math_records');
+            return records ? JSON.parse(records) : [];
+        }
+        
+        // Сохранение рекорда
+        function saveRecord(record) {
+            const records = loadRecords();
+            records.push(record);
+            records.sort((a, b) => b.score - a.score);
+            records.splice(10); // Оставить только топ-10
+            localStorage.setItem('math_records', JSON.stringify(records));
+        }
+        
+        // Переключение операции
+        function toggleOperation(op) {
+            const btn = document.querySelector(`[data-op="${op}"]`);
+            
+            if (btn.classList.contains('active')) {
+                if (selectedOperations.length > 1) {
+                    btn.classList.remove('active');
+                    selectedOperations = selectedOperations.filter(o => o !== op);
+                }
+            } else {
+                btn.classList.add('active');
+                selectedOperations.push(op);
+            }
+        }
+        
+        // Выбор сложности
+        function selectDifficulty(diff) {
+            difficulty = diff;
+            document.querySelectorAll('[data-diff]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-diff="${diff}"]`).classList.add('active');
+        }
+        
+        // Выбор количества примеров
+        function selectProblems(count) {
+            totalProblems = count;
+            document.querySelectorAll('[data-problems]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`[data-problems="${count}"]`).classList.add('active');
+        }
+        
+        // Начать игру
+        function startGame() {
+            // Сброс
+            problemNumber = 0;
+            score = 0;
+            correctCount = 0;
+            wrongCount = 0;
+            gameActive = true;
+            
+            // Обновить UI
+            updateStats();
+            document.getElementById('settingsScreen').classList.add('hidden');
+            document.getElementById('startScreen').classList.add('hidden');
+            document.getElementById('gameScreen').classList.remove('hidden');
+            document.getElementById('actionsScreen').classList.remove('hidden');
+            
+            // Запустить таймер
+            startTime = Date.now();
+            timerInterval = setInterval(updateTimer, 100);
+            
+            // Первый пример
+            nextProblem();
+        }
+        
+        // Следующий пример
+        function nextProblem() {
+            if (problemNumber >= totalProblems) {
+                endGame();
+                return;
+            }
+            
+            problemNumber++;
+            currentProblem = generateProblem();
+            
+            document.getElementById('problem').textContent = currentProblem.text;
+            document.getElementById('answerInput').value = '';
+            document.getElementById('answerInput').className = 'answer-input';
+            document.getElementById('feedback').textContent = '';
+            document.getElementById('answerInput').focus();
+        }
+        
+        // Генерация примера
+        function generateProblem() {
+            const operation = selectedOperations[Math.floor(Math.random() * selectedOperations.length)];
+            let num1, num2, answer, text;
+            
+            const ranges = {
+                easy: [1, 10],
+                medium: [1, 50],
+                hard: [1, 100]
+            };
+            
+            const [min, max] = ranges[difficulty];
+            
+            switch(operation) {
+                case 'add':
+                    num1 = randomInt(min, max);
+                    num2 = randomInt(min, max);
+                    answer = num1 + num2;
+                    text = `${num1} + ${num2} = ?`;
+                    break;
+                    
+                case 'sub':
+                    num1 = randomInt(min, max);
+                    num2 = randomInt(min, num1);
+                    answer = num1 - num2;
+                    text = `${num1} − ${num2} = ?`;
+                    break;
+                    
+                case 'mul':
+                    const mulMax = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 12 : 20;
+                    num1 = randomInt(2, mulMax);
+                    num2 = randomInt(2, mulMax);
+                    answer = num1 * num2;
+                    text = `${num1} × ${num2} = ?`;
+                    break;
+                    
+                case 'div':
+                    const divMax = difficulty === 'easy' ? 10 : difficulty === 'medium' ? 12 : 20;
+                    num2 = randomInt(2, divMax);
+                    num1 = num2 * randomInt(2, divMax);
+                    answer = num1 / num2;
+                    text = `${num1} ÷ ${num2} = ?`;
+                    break;
+            }
+            
+            return { answer, text, operation };
+        }
+        
+        // Случайное число
+        function randomInt(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
+        }
+        
+        // Проверить ответ
+        function checkAnswer() {
+            if (!gameActive) return;
+            
+            const input = document.getElementById('answerInput');
+            const userAnswer = parseFloat(input.value);
+            const feedback = document.getElementById('feedback');
+            
+            if (isNaN(userAnswer)) {
+                feedback.textContent = 'Введите число!';
+                feedback.className = 'feedback wrong';
+                return;
+            }
+            
+            if (Math.abs(userAnswer - currentProblem.answer) < 0.01) {
+                // Правильно
+                correctCount++;
+                score += calculatePoints();
+                
+                input.className = 'answer-input correct';
+                feedback.textContent = '✓ Правильно!';
+                feedback.className = 'feedback correct';
+                
+                updateStats();
+                setTimeout(nextProblem, 800);
+            } else {
+                // Неправильно
+                wrongCount++;
+                
+                input.className = 'answer-input wrong';
+                feedback.textContent = `✗ Неверно! Правильный ответ: ${currentProblem.answer}`;
+                feedback.className = 'feedback wrong';
+                
+                updateStats();
+                setTimeout(nextProblem, 1500);
+            }
+        }
+        
+        // Пропустить пример
+        function skipProblem() {
+            if (!gameActive) return;
+            wrongCount++;
+            updateStats();
+            nextProblem();
+        }
+        
+        // Расчёт очков
+        function calculatePoints() {
+            const basePoints = {
+                easy: 10,
+                medium: 20,
+                hard: 30
+            };
+            
+            return basePoints[difficulty];
+        }
+        
+        // Обновить статистику
+        function updateStats() {
+            document.getElementById('score').textContent = score;
+            document.getElementById('correct').textContent = correctCount;
+            document.getElementById('wrong').textContent = wrongCount;
+        }
+        
+        // Обновить таймер
+        function updateTimer() {
+            const elapsed = Date.now() - startTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            
+            const display = `${minutes}:${secs.toString().padStart(2, '0')}`;
+            const timerEl = document.getElementById('timer');
+            timerEl.textContent = display;
+            
+            // Предупреждения
+            if (seconds > 120) {
+                timerEl.classList.add('danger');
+            } else if (seconds > 60) {
+                timerEl.classList.add('warning');
+            }
+        }
+        
+        // Завершить игру
+        function endGame() {
+            gameActive = false;
+            clearInterval(timerInterval);
+            
+            const elapsed = Date.now() - startTime;
+            const seconds = Math.floor(elapsed / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            const timeDisplay = `${minutes}:${secs.toString().padStart(2, '0')}`;
+            
+            const accuracy = Math.round((correctCount / totalProblems) * 100);
+            
+            // Заполнить модальное окно
+            document.getElementById('resultTotal').textContent = totalProblems;
+            document.getElementById('resultCorrect').textContent = correctCount;
+            document.getElementById('resultWrong').textContent = wrongCount;
+            document.getElementById('resultAccuracy').textContent = accuracy + '%';
+            document.getElementById('resultTime').textContent = timeDisplay;
+            document.getElementById('resultScore').textContent = score;
+            
+            // Иконка и заголовок
+            if (accuracy >= 90) {
+                document.getElementById('resultsIcon').textContent = '🏆';
+                document.getElementById('resultsTitle').textContent = 'Превосходно!';
+            } else if (accuracy >= 70) {
+                document.getElementById('resultsIcon').textContent = '🎉';
+                document.getElementById('resultsTitle').textContent = 'Отлично!';
+            } else if (accuracy >= 50) {
+                document.getElementById('resultsIcon').textContent = '👍';
+                document.getElementById('resultsTitle').textContent = 'Хорошо!';
+            } else {
+                document.getElementById('resultsIcon').textContent = '💪';
+                document.getElementById('resultsTitle').textContent = 'Продолжайте тренироваться!';
+            }
+            
+            // Сохранить рекорд
+            const record = {
+                score: score,
+                accuracy: accuracy,
+                time: timeDisplay,
+                date: new Date().toLocaleDateString('ru-RU'),
+                timestamp: Date.now()
+            };
+            
+            const records = loadRecords();
+            const isNewRecord = records.length === 0 || score > records[0].score;
+            
+            if (isNewRecord) {
+                document.getElementById('recordMessage').classList.remove('hidden');
+            }
+            
+            saveRecord(record);
+            
+            // Показать модальное окно
+            document.getElementById('resultsModal').classList.add('show');
+        }
+        
+        // Показать рекорды
+        function showRecords() {
+            document.getElementById('resultsModal').classList.remove('show');
+            
+            const records = loadRecords();
+            const tbody = document.getElementById('recordsTableBody');
+            
+            if (records.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: #adb5bd;">
+                            Нет записей
+                        </td>
+                    </tr>
+                `;
+            } else {
+                tbody.innerHTML = records.map((r, i) => `
+                    <tr class="${i === 0 ? 'record-new' : ''}">
+                        <td>${i + 1}</td>
+                        <td>${r.score}</td>
+                        <td>${r.accuracy}%</td>
+                        <td>${r.time}</td>
+                        <td>${r.date}</td>
+                    </tr>
+                `).join('');
+            }
+            
+            document.getElementById('recordsModal').classList.add('show');
+        }
+        
+        // Закрыть модальное окно рекордов
+        function closeRecordsModal() {
+            document.getElementById('recordsModal').classList.remove('show');
+        }
+        
+        // Очистить рекорды
+        function clearRecords() {
+            if (confirm('Вы уверены, что хотите очистить все рекорды?')) {
+                localStorage.removeItem('math_records');
+                showRecords();
+            }
+        }
+        
+        // Перезапустить игру
+        function restartGame() {
+            document.getElementById('resultsModal').classList.remove('show');
+            document.getElementById('gameScreen').classList.add('hidden');
+            document.getElementById('actionsScreen').classList.add('hidden');
+            document.getElementById('settingsScreen').classList.remove('hidden');
+            document.getElementById('startScreen').classList.remove('hidden');
+            
+            // Сброс таймера
+            document.getElementById('timer').textContent = '0:00';
+            document.getElementById('timer').className = 'stat-value time';
+        }
+        
+        // Обработка Enter
+        document.getElementById('answerInput').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && gameActive) {
+                checkAnswer();
+            }
+        });
+    </script>
+</body>
+</html>
